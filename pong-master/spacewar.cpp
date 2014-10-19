@@ -98,22 +98,22 @@ void Spacewar::update()
 	// INPUT MODS
 	////////////////
 
-	D3DXVECTOR2 direction(input->getMouseX()-sony.getX(),input->getMouseY()-sony.getY());
+	D3DXVECTOR2 direction(input->getMouseX()-64/2-sony.getX(),input->getMouseY()-64/2-sony.getY());
 	D3DXVECTOR2 direction2(0,0);
 	
-	direction.x = (input->getMouseX()-sony.getX());
+	//direction.x = (input->getMouseX()-sony.getX());
 
 	D3DXVec2Normalize(&direction, &direction);
 
 	//player 1
     
 	// Position at cursor if close enough
-	if(sonyVel.xVel*frameTime < abs((input->getMouseX()-64/2)-sony.getX()) ) {
+	if(sonyVel.xVel*frameTime > abs((input->getMouseX()-64/2)-sony.getX()) ) {
 		pos.x = input->getMouseX()-64/2;
 	} else {
 		pos.x = sony.getX() + sonyVel.xVel * frameTime * direction.x;
 	}
-	if(sonyVel.yVel*frameTime < abs((input->getMouseY()-64/2)-sony.getY()) ) {
+	if(sonyVel.yVel*frameTime > abs((input->getMouseY()-64/2)-sony.getY()) ) {
 		pos.y = input->getMouseY()-64/2;
 	} else {
 		pos.y = sony.getY() + sonyVel.yVel * frameTime * direction.y;
@@ -215,9 +215,9 @@ void Spacewar::render()
 	dxFont96->print(s1.str(),110,76);         // display message
 	dxFont96->print(s2.str(),400,76);         // display message
 	
-	std::stringstream vel;
-	vel << sony.getVelocity().x;
-	dxFont96->print(vel.str(),0,0);
+	//std::stringstream vel;
+	//vel << sony.getVelocity().x;
+	//dxFont96->print(vel.str(),0,0);
 	
 
     graphics->spriteEnd();                  // end drawing sprites
