@@ -42,7 +42,7 @@ void Spacewar::initialize(HWND hwnd)
 	//player 1
 	if (!sonyTexture.initialize(graphics, SONY_IMAGE))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Sony texture initialization failed"));
-	if (!sony.initialize(this, 10,50,0, &sonyTexture))
+	if (!sony.initialize(this, 64,64,0, &sonyTexture))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error init sony"));
 	if (!bgTexture.initialize(graphics, BACKGROUND_IMAGE))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Background texture initialization failed"));
@@ -53,7 +53,7 @@ void Spacewar::initialize(HWND hwnd)
 	sony.setScale(SONY_IMAGE_SCALE);
 	
 	//player 2
-	if (!sony2.initialize(this, 10,50,0, &sonyTexture))
+	if (!sony2.initialize(this, 64,64,0, &sonyTexture))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error init sony"));
 	sony2.setX(590);
 	sony2.setY(GAME_HEIGHT/2 - (sony2.getHeight()*SONY_IMAGE_SCALE)/2);
@@ -108,13 +108,13 @@ void Spacewar::update()
 	//player 1
     
 	// Position at cursor if close enough
-	if(sonyVel.xVel*frameTime < abs(input->getMouseX()-sony.getX()) ) {
-		pos.x = input->getMouseX();
+	if(sonyVel.xVel*frameTime < abs((input->getMouseX()-64/2)-sony.getX()) ) {
+		pos.x = input->getMouseX()-64/2;
 	} else {
 		pos.x = sony.getX() + sonyVel.xVel * frameTime * direction.x;
 	}
-	if(sonyVel.yVel*frameTime < abs(input->getMouseY()-sony.getY()) ) {
-		pos.y = input->getMouseY();
+	if(sonyVel.yVel*frameTime < abs((input->getMouseY()-64/2)-sony.getY()) ) {
+		pos.y = input->getMouseY()-64/2;
 	} else {
 		pos.y = sony.getY() + sonyVel.yVel * frameTime * direction.y;
 	}
@@ -137,7 +137,7 @@ void Spacewar::update()
 
 	}
 	//player 2
-	sony2.setY(ball.getY()-shipNS::HEIGHT/2);
+	sony2.setY(ball.getY()-paddleNS::HEIGHT/2);
 	if(sony2LastFrame){
 		D3DXVECTOR2 changeVelocity = ball.getVelocity();
 		changeVelocity.x-=50;
