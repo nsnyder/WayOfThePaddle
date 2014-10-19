@@ -12,7 +12,9 @@ int score1=0,score2=0;
 // Constructor
 //=============================================================================
 Spacewar::Spacewar()
-{}
+{
+	
+}
 
 //=============================================================================
 // Destructor
@@ -121,6 +123,11 @@ void Spacewar::update()
 	float oldY2 = sony2.getY();
 
 	//player 1
+	sony.setY(input->getMouseY());
+	if(input->getMouseX()<GAME_WIDTH/4){
+		sony.setX(input->getMouseX());
+	}
+	/*
 	// Position at cursor if close enough
 	if(sonyVel.xVel*frameTime > abs((input->getMouseX()-64/2)-sony.getX()) ) {
 		pos.x = input->getMouseX()-64/2;
@@ -137,9 +144,16 @@ void Spacewar::update()
 	sony.setY(pos.y);
 	if(sony.getX()>GAME_WIDTH/4) {
 		sony.setX(GAME_WIDTH/4);
-	}
+	}*/
 	//player 2
-	sony2.setY(ball.getY()-20);
+
+	if(ball.getY() > sony2.getY() +sony2.getHeight()){
+		sony2.setY(sony2.getY() + 2);
+	}
+	else if(ball.getY() < sony2.getY()){
+		sony2.setY(sony2.getY() - 2);
+	}
+	
 
 	//setting velocities
 	if(!sonyLastFrame){
@@ -151,7 +165,7 @@ void Spacewar::update()
 		tmpVel2.x = (sony2.getX() - oldX2) / frameTime;
 		tmpVel2.y = (sony2.getY() - oldY2) / frameTime;
 		sony2.setVelocity(tmpVel2);
-
+		
 		
 	
 	
@@ -180,23 +194,30 @@ void Spacewar::ai()
 void Spacewar::collisions()
 {
 	D3DXVECTOR2 temp;
-	if(ball.collidesWith(sony, temp) && !sonyLastFrame)
+	if(ball.collidesWith(sony, temp) && !sonyLastFrame && ball.getVelocity().x < 0)
 	{
 		sonyLastFrame = true;
 		D3DXVECTOR2 newDir = -ball.getVelocity();
 		newDir.x += sony.getVelocity().x;
+		if(newDir.x <100){
+			newDir.x = 100;
+		}
+		else if(newDir.x > 1000){
+			newDir.x = 1000;
+		}
 		ball.setSpin(ball.getSpin() + sony.getVelocity().y);
-		newDir.y = ball.getSpin() * ball.getVelocity().y;
+		newDir.y = ball.getVelocity().y;
 		ball.setVelocity(newDir);
 		audio->playCue(HIT);
+	
 	}
-	if(ball.collidesWith(sony2, temp) && !sony2LastFrame)
+	if(ball.collidesWith(sony2, temp) && !sony2LastFrame && ball.getVelocity().x > 0)
 	{
 		sony2LastFrame = true;
 		D3DXVECTOR2 newDir = -ball.getVelocity();
 		newDir.x += sony2.getVelocity().x;
 		ball.setSpin(ball.getSpin() + sony2.getVelocity().y);
-		newDir.y = ball.getSpin() * ball.getVelocity().y;
+		newDir.y = ball.getVelocity().y;
 		ball.setVelocity(newDir);
 		audio->playCue(HIT);
 	}
@@ -205,8 +226,9 @@ void Spacewar::collisions()
 	} else { sonyLastFrame = false; }
 	if(ball.collidesWith(sony2, temp)) {
 		sony2LastFrame = true;
-	} else { sony2LastFrame = false; }
-
+	}else {
+		sony2LastFrame = false;
+	}
 }
 
 //=============================================================================

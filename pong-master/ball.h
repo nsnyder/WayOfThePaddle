@@ -39,6 +39,7 @@ public:
     Ball();
 	float getSpin();
 	void setSpin(float);
+	void invertSpin();
     // inherited member functions
     void update(float frameTime);
 };
