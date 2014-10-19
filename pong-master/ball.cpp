@@ -18,10 +18,6 @@ Ball::Ball() : Entity()
     spriteData.y = ballNS::Y;
     spriteData.rect.bottom = ballNS::HEIGHT;    // rectangle to select parts of an image
     spriteData.rect.right = ballNS::WIDTH;
-	edge.top = -ballNS::HEIGHT/2;
-    edge.left = -ballNS::WIDTH/2;
-	edge.bottom = ballNS::HEIGHT/2;
-    edge.right = ballNS::WIDTH/2;
     velocity.x = 100;                             // velocity X
     velocity.y = 100;                             // velocity Y
     frameDelay = ballNS::SHIP_ANIMATION_DELAY;
@@ -29,13 +25,27 @@ Ball::Ball() : Entity()
     endFrame     = ballNS::SHIP1_END_FRAME;     // last frame of ship animation
     currentFrame = startFrame;
     radius = ballNS::WIDTH/2.0;
-    collisionType = entityNS::BOX;
+    collisionType = entityNS::CIRCLE;
 	direction.x = 1;
 	direction.y = 1;
-	spin = 1.0f;
+	spin = 4.0f;
 }
 void Ball::setSpin(float s){
-	spin = s;
+	spin = -s/400;
+	if(spin>4){
+		spin = 4;
+	}
+	else if(spin > -1 && spin < 1){
+		if(spin >0){
+			spin = 1;
+		}
+		else{
+			spin = -1;
+		}
+	}
+	else if(spin<-4){
+		spin = -4;
+	}
 }
 
 //=============================================================================
@@ -88,19 +98,23 @@ void Ball::update(float frameTime)
 		velocity.x = 100;
 		velocity.y = 100;
     }
+
+
+
+
+
     if (spriteData.y > GAME_HEIGHT-ballNS::HEIGHT*getScale())
     {
         direction.y *= -1;
-		velocity *= .9;
 		spriteData.y = GAME_HEIGHT-ballNS::HEIGHT*getScale() - 1;
 	}
 	else if (spriteData.y < 0)
 	{
-		velocity *= .9;
 		direction.y *= -1;
+		spriteData.y = 1;
 		
 	}
-	velocity.y += frameTime * GRAVITY * direction.y  * spin;
-	spriteData.angle += frameTime * spin * ballNS::ROTATION_RATE;
 	
+	velocity.y += frameTime * GRAVITY * direction.y * spin;
+
 }

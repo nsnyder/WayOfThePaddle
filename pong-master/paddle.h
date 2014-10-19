@@ -10,7 +10,7 @@
 #include "entity.h"
 #include "constants.h"
 
-namespace paddleNS
+namespace shipNS
 {
     const int WIDTH = 10;                   // image width
     const int HEIGHT = 50;                  // image height
@@ -19,9 +19,9 @@ namespace paddleNS
     const float ROTATION_RATE = (float)PI;  // radians per second
     const float SPEED = 150;                // 100 pixels per second
     const float MASS = 300.0f;              // mass
-    const int   TEXTURE_COLS = 1;           // texture has 2 columns
+    const int   TEXTURE_COLS = 8;           // texture has 2 columns
     const int   SHIP1_START_FRAME = 0;      // ship starts at frame 0
-    const int   SHIP1_END_FRAME = 0;         // ship animation frames 0,1,2,3
+    const int   SHIP1_END_FRAME = 3;         // ship animation frames 0,1,2,3
     const float SHIP_ANIMATION_DELAY = 0.2f;    // time between frames
 }
 

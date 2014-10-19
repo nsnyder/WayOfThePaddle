@@ -42,7 +42,7 @@ void Spacewar::initialize(HWND hwnd)
 	//player 1
 	if (!sonyTexture.initialize(graphics, SONY_IMAGE))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Sony texture initialization failed"));
-	if (!sony.initialize(this, 64,64,0, &sonyTexture))
+	if (!sony.initialize(this, 10,50,0, &sonyTexture))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error init sony"));
 	if (!bgTexture.initialize(graphics, BACKGROUND_IMAGE))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Background texture initialization failed"));
@@ -53,7 +53,7 @@ void Spacewar::initialize(HWND hwnd)
 	sony.setScale(SONY_IMAGE_SCALE);
 	
 	//player 2
-	if (!sony2.initialize(this, 64,64,0, &sonyTexture))
+	if (!sony2.initialize(this, 10,50,0, &sonyTexture))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error init sony"));
 	sony2.setX(590);
 	sony2.setY(GAME_HEIGHT/2 - (sony2.getHeight()*SONY_IMAGE_SCALE)/2);
@@ -65,8 +65,8 @@ void Spacewar::initialize(HWND hwnd)
         throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing DirectX font"));
 
 	
-	sonyVel.xVel = 300;
-	sonyVel.yVel = 300;
+	sonyVel.xVel = 0;
+	sonyVel.yVel = 150;
 
 	sony2Vel.xVel = 0;
 	sony2Vel.yVel = 150;
@@ -98,52 +98,100 @@ void Spacewar::update()
 	// INPUT MODS
 	////////////////
 
-	D3DXVECTOR2 direction(input->getMouseX()-64/2-sony.getX(),input->getMouseY()-64/2-sony.getY());
+	D3DXVECTOR2 direction(0,0);
 	D3DXVECTOR2 direction2(0,0);
 	
-	//direction.x = (input->getMouseX()-sony.getX());
+	/*
+	if (input->isKeyDown(VK_UP))
+	{
+		direction.y = -1;
+	}
+	if (input->isKeyDown(VK_DOWN))
+	{
+		direction.y = 1;
+	}*/
 
+	if (GetAsyncKeyState( 'S' ) )
+		direction2.y = 1;
+	if( GetAsyncKeyState( 'W' ) )
+		direction2.y = -1;
+	
+	
+
+	// Wrap around
+	/*
+	if(sony.getX()>GAME_WIDTH)
+		sony.setX(-sony.getWidth()*sony.getScale());
+	if(sony.getX()+sony.getWidth()*sony.getScale()<0)
+		sony.setX(GAME_WIDTH);
+	if(sony.getY()>GAME_HEIGHT)
+		sony.setY(-sony.getHeight()*sony.getScale());
+	if(sony.getY()+sony.getHeight()*sony.getScale()<0)
+		sony.setY(GAME_HEIGHT);
+	*/
+
+	// Reflect
+	/*
+	if(sony.getX()+sony.getWidth()*sony.getScale()>GAME_WIDTH)
+		sonyVel.xVel *= -1;
+	if(sony.getX()<0)
+		sonyVel.xVel *= -1;
+	if(sony.getY()+sony.getHeight()*sony.getScale()>GAME_HEIGHT)
+		sonyVel.yVel *= -1;
+	if(sony.getY()<0)
+		sonyVel.yVel *= -1;
+	*/
+	/*
+	if(sony.getX()+sony.getWidth()*sony.getScale()>GAME_WIDTH)
+		direction.x = 0;
+	if(sony.getX()<0)
+		direction.x = 0;
+	if(sony.getY()+sony.getHeight()*sony.getScale()>GAME_HEIGHT)
+		direction.y = 0;
+	if(sony.getY()<0)
+		direction.y = 0;
+	*/
 	D3DXVec2Normalize(&direction, &direction);
 
-	//player 1
-    
-	// Position at cursor if close enough
-	if(sonyVel.xVel*frameTime > abs((input->getMouseX()-64/2)-sony.getX()) ) {
-		pos.x = input->getMouseX()-64/2;
-	} else {
-		pos.x = sony.getX() + sonyVel.xVel * frameTime * direction.x;
-	}
-	if(sonyVel.yVel*frameTime > abs((input->getMouseY()-64/2)-sony.getY()) ) {
-		pos.y = input->getMouseY()-64/2;
-	} else {
-		pos.y = sony.getY() + sonyVel.yVel * frameTime * direction.y;
-	}
+	pos.y = sony.getY() + sonyVel.yVel * frameTime * direction.y;
+	sony.setY(pos.y);
 
-	//sony.setY(input->getMouseY());
+	pos2.y = sony2.getY() + sony2Vel.yVel * frameTime * direction2.y;
+	sony2.setY(pos2.y);
+
+	
+
+	//Getting old positions so velocities work
 	D3DXVECTOR2 tmpVel = sony.getVelocity();
+	D3DXVECTOR2 tmpVel2 = sony2.getVelocity();
 	float oldX = sony.getX();
 	float oldY = sony.getY();
+	float oldX2 = sony2.getX();
+	float oldY2 = sony2.getY();
 
-	sony.setX(pos.x);
-	sony.setY(pos.y);
-	if(sony.getX()>GAME_WIDTH/4){
-		sony.setX(GAME_WIDTH/4);
+	//player 1
+	sony.setY(input->getMouseY());
+	if(input->getMouseX()<GAME_WIDTH/4){
+		sony.setX(input->getMouseX());
 	}
+	//player 2
+	sony2.setY(ball.getY()-20);
 
+	//setting velocities
 	if(!sonyLastFrame){
 		tmpVel.x = (sony.getX() - oldX) / frameTime;
 		tmpVel.y = (sony.getY() - oldY) / frameTime;
 		sony.setVelocity(tmpVel);
+	}
+	//update velocity of ai
+		tmpVel2.x = (sony2.getX() - oldX2) / frameTime;
+		tmpVel2.y = (sony2.getY() - oldY2) / frameTime;
+		sony2.setVelocity(tmpVel2);
 
-	}
-	//player 2
-	sony2.setY(ball.getY()-paddleNS::HEIGHT/2);
-	if(sony2LastFrame){
-		D3DXVECTOR2 changeVelocity = ball.getVelocity();
-		changeVelocity.x-=50;
-		changeVelocity.y-=50;
-		ball.setVelocity(changeVelocity);
-	}
+		
+	
+	
+	
 	
 
 	/*if (sony2.getY() > 480-sony2.getHeight()*sony2.getScale())
@@ -172,19 +220,19 @@ void Spacewar::collisions()
 	{
 		sonyLastFrame = true;
 		D3DXVECTOR2 newDir = -ball.getVelocity();
-		double test = sony.getVelocity().x;
 		newDir.x += sony.getVelocity().x;
-		float y = sony.getVelocity().y;
-		ball.setSpin(ball.getSpin() + sony.getVelocity().y/50);
-		float x = ball.getSpin();
+		ball.setSpin(ball.getSpin() + sony.getVelocity().y);
+		newDir.y = ball.getSpin() * ball.getVelocity().y;
 		ball.setVelocity(newDir);
 		audio->playCue(HIT);
 	}
 	if(ball.collidesWith(sony2, temp) && !sony2LastFrame)
 	{
 		sony2LastFrame = true;
-		D3DXVECTOR2 newDir = ball.getVelocity();
-		newDir.x*=-1;
+		D3DXVECTOR2 newDir = -ball.getVelocity();
+		newDir.x += sony2.getVelocity().x;
+		ball.setSpin(ball.getSpin() + sony2.getVelocity().y);
+		newDir.y = ball.getSpin() * ball.getVelocity().y;
 		ball.setVelocity(newDir);
 		audio->playCue(HIT);
 	}
@@ -215,10 +263,10 @@ void Spacewar::render()
 	dxFont96->print(s1.str(),110,76);         // display message
 	dxFont96->print(s2.str(),400,76);         // display message
 	
-	//std::stringstream vel;
-	//vel << sony.getVelocity().x;
-	//dxFont96->print(vel.str(),0,0);
-	
+	/*std::stringstream vel;
+	vel << sony2.getVelocity().y;
+	dxFont96->print(vel.str(),0,0);
+	*/
 
     graphics->spriteEnd();                  // end drawing sprites
 }
@@ -243,7 +291,6 @@ void Spacewar::resetAll()
 {
    
 	sonyTexture.onResetDevice();
-
     Game::resetAll();
     return;
 }
