@@ -65,8 +65,8 @@ void Spacewar::initialize(HWND hwnd)
         throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing DirectX font"));
 
 	
-	sonyVel.xVel = 0;
-	sonyVel.yVel = 150;
+	sonyVel.xVel = 300;
+	sonyVel.yVel = 300;
 
 	sony2Vel.xVel = 0;
 	sony2Vel.yVel = 150;
@@ -98,91 +98,52 @@ void Spacewar::update()
 	// INPUT MODS
 	////////////////
 
-	D3DXVECTOR2 direction(0,0);
+	D3DXVECTOR2 direction(input->getMouseX()-sony.getX(),input->getMouseY()-sony.getY());
 	D3DXVECTOR2 direction2(0,0);
 	
-	/*
-	if (input->isKeyDown(VK_UP))
-	{
-		direction.y = -1;
-	}
-	if (input->isKeyDown(VK_DOWN))
-	{
-		direction.y = 1;
-	}*/
+	direction.x = (input->getMouseX()-sony.getX());
 
-	if (GetAsyncKeyState( 'S' ) )
-		direction2.y = 1;
-	if( GetAsyncKeyState( 'W' ) )
-		direction2.y = -1;
-	
-	
-
-	// Wrap around
-	/*
-	if(sony.getX()>GAME_WIDTH)
-		sony.setX(-sony.getWidth()*sony.getScale());
-	if(sony.getX()+sony.getWidth()*sony.getScale()<0)
-		sony.setX(GAME_WIDTH);
-	if(sony.getY()>GAME_HEIGHT)
-		sony.setY(-sony.getHeight()*sony.getScale());
-	if(sony.getY()+sony.getHeight()*sony.getScale()<0)
-		sony.setY(GAME_HEIGHT);
-	*/
-
-	// Reflect
-	/*
-	if(sony.getX()+sony.getWidth()*sony.getScale()>GAME_WIDTH)
-		sonyVel.xVel *= -1;
-	if(sony.getX()<0)
-		sonyVel.xVel *= -1;
-	if(sony.getY()+sony.getHeight()*sony.getScale()>GAME_HEIGHT)
-		sonyVel.yVel *= -1;
-	if(sony.getY()<0)
-		sonyVel.yVel *= -1;
-	*/
-	/*
-	if(sony.getX()+sony.getWidth()*sony.getScale()>GAME_WIDTH)
-		direction.x = 0;
-	if(sony.getX()<0)
-		direction.x = 0;
-	if(sony.getY()+sony.getHeight()*sony.getScale()>GAME_HEIGHT)
-		direction.y = 0;
-	if(sony.getY()<0)
-		direction.y = 0;
-	*/
 	D3DXVec2Normalize(&direction, &direction);
-
-	pos.y = sony.getY() + sonyVel.yVel * frameTime * direction.y;
-	sony.setY(pos.y);
-
-	pos2.y = sony2.getY() + sony2Vel.yVel * frameTime * direction2.y;
-	sony2.setY(pos2.y);
 
 	//player 1
     
-	sony.setY(input->getMouseY());
+	// Position at cursor if close enough
+	if(sonyVel.xVel*frameTime < abs(input->getMouseX()-sony.getX()) ) {
+		pos.x = input->getMouseX();
+	} else {
+		pos.x = sony.getX() + sonyVel.xVel * frameTime * direction.x;
+	}
+	if(sonyVel.yVel*frameTime < abs(input->getMouseY()-sony.getY()) ) {
+		pos.y = input->getMouseY();
+	} else {
+		pos.y = sony.getY() + sonyVel.yVel * frameTime * direction.y;
+	}
+
+	//sony.setY(input->getMouseY());
 	D3DXVECTOR2 tmpVel = sony.getVelocity();
 	float oldX = sony.getX();
 	float oldY = sony.getY();
-	if(input->getMouseX()<GAME_WIDTH/4){
-		sony.setX(input->getMouseX());
+
+	sony.setX(pos.x);
+	sony.setY(pos.y);
+	if(sony.getX()>GAME_WIDTH/4){
+		sony.setX(GAME_WIDTH/4);
 	}
+
 	if(!sonyLastFrame){
 		tmpVel.x = (sony.getX() - oldX) / frameTime;
 		tmpVel.y = (sony.getY() - oldY) / frameTime;
 		sony.setVelocity(tmpVel);
 
 	}
+	//player 2
+	sony2.setY(ball.getY()-shipNS::HEIGHT/2);
 	if(sony2LastFrame){
 		D3DXVECTOR2 changeVelocity = ball.getVelocity();
 		changeVelocity.x-=50;
 		changeVelocity.y-=50;
 		ball.setVelocity(changeVelocity);
 	}
-	//player 2
-	sony2.setY(ball.getY()-20);
-	
 	
 
 	/*if (sony2.getY() > 480-sony2.getHeight()*sony2.getScale())
