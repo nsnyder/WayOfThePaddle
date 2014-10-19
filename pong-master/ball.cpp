@@ -101,5 +101,6 @@ void Ball::update(float frameTime)
 		
 	}
 	velocity.y += frameTime * GRAVITY * direction.y  * spin;
+	spriteData.angle += frameTime * spin * ballNS::ROTATION_RATE;
 	
 }
