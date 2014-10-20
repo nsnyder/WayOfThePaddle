@@ -107,6 +107,13 @@ void Spacewar::update()
 		D3DXVECTOR2 direction(input->getMouseX()-64/2-sony.getX(),input->getMouseY()-64/2-sony.getY());
 		D3DXVECTOR2 direction2(0,0);
 	
+		//Getting old positions so velocities work
+		D3DXVECTOR2 tmpVel = sony.getVelocity();
+		D3DXVECTOR2 tmpVel2 = sony2.getVelocity();
+		float oldX = sony.getX();
+		float oldY = sony.getY();
+		float oldX2 = sony2.getX();
+		float oldY2 = sony2.getY();
 	
 		D3DXVec2Normalize(&direction, &direction);
 
@@ -116,25 +123,17 @@ void Spacewar::update()
 		pos2.y = sony2.getY() + sony2Vel.yVel * frameTime * direction2.y;
 		sony2.setY(pos2.y);
 
-	
-
-		//Getting old positions so velocities work
-		D3DXVECTOR2 tmpVel = sony.getVelocity();
-		D3DXVECTOR2 tmpVel2 = sony2.getVelocity();
-		float oldX = sony.getX();
-		float oldY = sony.getY();
-		float oldX2 = sony2.getX();
-		float oldY2 = sony2.getY();
 
 		//player 1
-			// Instant jump
+		// Instant jump
 		/*
 		sony.setY(input->getMouseY());
-		if(input->getMouseX()-64/2<GAME_WIDTH/2){
+		if(input->getMouseX()-64/2<GAME_WIDTH/2-64){
 			sony.setX(input->getMouseX()-64/2);
-		}*/
-	
+		}
+		*/
 		// Gradual movement
+		
 		if(sonyVel.xVel*frameTime > abs((input->getMouseX()-64/2)-sony.getX()) ) {
 			pos.x = input->getMouseX()-64/2;
 		} else {
@@ -151,7 +150,7 @@ void Spacewar::update()
 		if(sony.getX()>GAME_WIDTH/2-64) {
 			sony.setX(GAME_WIDTH/2-64);
 		}
-	
+		
 
 		//player 2
 
@@ -212,11 +211,11 @@ void Spacewar::collisions()
 			sony.setLoop(false);
 			D3DXVECTOR2 newDir = -ball.getVelocity();
 			newDir.x += sony.getVelocity().x;
-			if(newDir.x <100){
-				newDir.x = 100;
+			if(abs(newDir.x) <100){
+				if(newDir.x<0) { newDir.x = -100; } else { newDir.x = 100; }
 			}
-			else if(newDir.x > 1000){
-				newDir.x = 1000;
+			else if(abs(newDir.x) > 1000){
+				if(newDir.x<0) { newDir.x = -1000; } else { newDir.x = 1000; }
 			}
 			ball.setSpin(ball.getSpin() + sony.getVelocity().y);
 			newDir.y = ball.getVelocity().y;
@@ -279,9 +278,9 @@ void Spacewar::render()
 		if(score2==11) { youWin = false; gameOver = true; }
 	
 		/*std::stringstream vel;
-		vel << sony2.getVelocity().y;
-		dxFont96->print(vel.str(),0,0);
-		*/
+		vel << sony.getVelocity().x;
+		dxFont96->print(vel.str(),0,0);*/
+		
 	} else {
 		if(youWin) {
 			dxFont96->print("You win! :D",20,GAME_HEIGHT/2);         // display message

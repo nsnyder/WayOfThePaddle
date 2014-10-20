@@ -33,8 +33,8 @@ const char PLANET_IMAGE[] = "pictures\\planet.png"; // picture of planet
 const char SONY_IMAGE[] = "pictures\\sony.png";
 
 // window
-const char CLASS_NAME[] = "Spacewar";
-const char GAME_TITLE[] = "Spacewar";
+const char CLASS_NAME[] = "Way of the Paddle";
+const char GAME_TITLE[] = "Way of the Paddle";
 const bool FULLSCREEN = false;              // windowed or fullscreen
 const UINT GAME_WIDTH =  640;               // width of game in pixels
 const UINT GAME_HEIGHT = 480;               // height of game in pixels
