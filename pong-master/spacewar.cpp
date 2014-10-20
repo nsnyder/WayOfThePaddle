@@ -266,8 +266,8 @@ void Spacewar::render()
 		dxFont96->print(s1.str(),110,76);         // display message
 		dxFont96->print(s2.str(),400,76);         // display message
 
-		if(score1==1) { youWin = true; gameOver = true; }
-		if(score2==1) { youWin = false; gameOver = true; }
+		if(score1==11) { youWin = true; gameOver = true; }
+		if(score2==11) { youWin = false; gameOver = true; }
 	
 		/*std::stringstream vel;
 		vel << sony2.getVelocity().y;
