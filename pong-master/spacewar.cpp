@@ -50,8 +50,9 @@ void Spacewar::initialize(HWND hwnd)
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error init sony"));
 	if (!bgTexture.initialize(graphics, BACKGROUND_IMAGE))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Background texture initialization failed"));
-	if (!bg.initialize(graphics, 640,480,0, &bgTexture))
+	if (!bg.initialize(graphics, 640,480,10, &bgTexture))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error init background"));
+	bg.setCurrentFrame(0);
 	sony.setX(50);
 	sony.setY(GAME_HEIGHT/2 - (sony.getHeight()*SONY_IMAGE_SCALE)/2);
 	sony.setScale(SONY_IMAGE_SCALE);
@@ -88,6 +89,7 @@ void Spacewar::update()
 {
 	//Unomment to get the image to move
 	ball.update(frameTime,gameOver);
+	bg.update(frameTime);
 	if(!gameOver) {
 		//pos.x = sony.getX() + sonyVel.xVel * frameTime;
 		//sony.setX(pos.x);
@@ -266,7 +268,14 @@ void Spacewar::render()
 		dxFont96->print(s1.str(),110,76);         // display message
 		dxFont96->print(s2.str(),400,76);         // display message
 
-		if(score1==11) { youWin = true; gameOver = true; }
+		if(score1==11) {
+			youWin = true;
+			gameOver = true;
+			bg.setFrames(1,5);
+			bg.setLoop(true);
+			bg.setCurrentFrame(1);
+			bg.setFrameDelay(.2f);
+		}
 		if(score2==11) { youWin = false; gameOver = true; }
 	
 		/*std::stringstream vel;
@@ -280,7 +289,6 @@ void Spacewar::render()
 			dxFont96->print("You lose! :(",20,GAME_HEIGHT/2);         // display message
 		}
 	}
-
 	ball.draw();
 	std::stringstream s1;
 	s1 << score1;
