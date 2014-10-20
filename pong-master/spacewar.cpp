@@ -44,7 +44,7 @@ void Spacewar::initialize(HWND hwnd)
 	//player 1
 	if (!sonyTexture.initialize(graphics, SONY_IMAGE))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Sony texture initialization failed"));
-	if (!sony.initialize(this, 64,64,0, &sonyTexture))
+	if (!sony.initialize(this, 64,64,paddleNS::TEXTURE_COLS, &sonyTexture))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error init sony"));
 	if (!bgTexture.initialize(graphics, BACKGROUND_IMAGE))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Background texture initialization failed"));
@@ -55,7 +55,7 @@ void Spacewar::initialize(HWND hwnd)
 	sony.setScale(SONY_IMAGE_SCALE);
 	
 	//player 2
-	if (!sony2.initialize(this, 64,64,0, &sonyTexture))
+	if (!sony2.initialize(this, 64,64,paddleNS::TEXTURE_COLS, &sonyTexture))
 		throw(GameError(gameErrorNS::FATAL_ERROR, "Error init sony"));
 	sony2.setX(590);
 	sony2.setY(GAME_HEIGHT/2 - (sony2.getHeight()*SONY_IMAGE_SCALE)/2);
