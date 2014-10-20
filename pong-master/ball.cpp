@@ -59,7 +59,7 @@ void Ball::invertSpin(){spin = -spin;};
 // frameTime is used to regulate the speed of movement and animation
 //=============================================================================
 float Ball::getSpin(){return spin;}
-void Ball::update(float frameTime)
+void Ball::update(float frameTime, bool gameOver)
 {
     Entity::update(frameTime);
 
@@ -89,23 +89,31 @@ void Ball::update(float frameTime)
 	
     if (spriteData.x > GAME_WIDTH-ballNS::WIDTH*getScale())
     {
-        spriteData.x = GAME_WIDTH/2; 
-		spriteData.y = GAME_HEIGHT/2;
-		audio->playCue(MISS);
-		velocity.x = -100;
-		velocity.y = 100;
-		spin = 1;
-		score1++;
+		if(!gameOver) {
+			spriteData.x = GAME_WIDTH/2; 
+			spriteData.y = GAME_HEIGHT/2;
+			audio->playCue(MISS);
+			velocity.x = -100;
+			velocity.y = 100;
+			spin = 1;
+			score1++;
+		} else {
+			velocity.x*=-1;
+		}
     } 
     else if (spriteData.x < 0)
     {
-        spriteData.x = GAME_WIDTH/2;
-		spriteData.y = GAME_HEIGHT/2;
-		audio->playCue(MISS);
-		score2++;
-		velocity.x = -100;
-		velocity.y = 100;
-		spin = 1;
+		if(!gameOver) {
+			spriteData.x = GAME_WIDTH/2;
+			spriteData.y = GAME_HEIGHT/2;
+			audio->playCue(MISS);
+			score2++;
+			velocity.x = -100;
+			velocity.y = 100;
+			spin = 1;
+		} else {
+			velocity.x*=-1;
+		}
     }
 
 

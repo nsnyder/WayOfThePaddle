@@ -43,6 +43,8 @@ private:
 	Image bg;
 	TextDX  *dxFont96;
 	bool sonyLastFrame, sony2LastFrame;
+	bool youWin;
+	bool gameOver;
 
 	struct position{
 		float xPos;

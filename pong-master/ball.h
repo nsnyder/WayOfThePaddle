@@ -41,7 +41,7 @@ public:
 	void setSpin(float);
 	void invertSpin();
     // inherited member functions
-    void update(float frameTime);
+    void update(float frameTime, bool gameOver);
 };
 #endif
 
