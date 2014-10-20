@@ -38,17 +38,17 @@ Paddle::Paddle() : Entity()
 // typically called once per frame
 // frameTime is used to regulate the speed of movement and animation
 //=============================================================================
-void Paddle::update(float frameTime, bool& shoot)
+void Paddle::update(float frameTime)
 {
     Entity::update(frameTime);
 
 	//movement control
-	direction.x = 0;
+	/*direction.x = 0;
 	direction.y = 0;
 	if(input->isKeyDown(VK_UP))
 	{
 		direction.y = 1;
-	}
+	}*/
 	/*if(input->isKeyDown(VK_UP))
 	{
 		direction.y = -1;
@@ -61,6 +61,7 @@ void Paddle::update(float frameTime, bool& shoot)
 	{
 		direction.x = 1;
 	}*/
+	/*
 	D3DXVec2Normalize(&direction,&direction);
 	
 	float prevX = spriteData.x;
@@ -87,5 +88,5 @@ void Paddle::update(float frameTime, bool& shoot)
 	{
 		spriteData.y = 0;
 	}
-	
+	*/
 }

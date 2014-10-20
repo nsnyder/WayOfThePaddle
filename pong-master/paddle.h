@@ -22,7 +22,7 @@ namespace paddleNS
     const int   TEXTURE_COLS = 10;           // texture has 2 columns
     const int   SHIP1_START_FRAME = 0;      // ship starts at frame 0
     const int   SHIP1_END_FRAME = 0;         // ship animation frames 0,1,2,3
-    const float SHIP_ANIMATION_DELAY = 0.2f;    // time between frames
+    const float SHIP_ANIMATION_DELAY = 0.1f;    // time between frames
 }
 
 // inherits from Entity class
@@ -36,7 +36,7 @@ public:
     Paddle();
 
     // inherited member functions
-    void update(float frameTime, bool& shoot);
+    void update(float frameTime);
 };
 #endif
 

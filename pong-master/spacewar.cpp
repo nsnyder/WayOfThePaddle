@@ -201,6 +201,9 @@ void Spacewar::collisions()
 	if(ball.collidesWith(sony, temp) && !sonyLastFrame && ball.getVelocity().x < 0)
 	{
 		sonyLastFrame = true;
+		sony.setFrames(1,8);
+		sony.setCurrentFrame(1);
+		sony.setLoop(false);
 		D3DXVECTOR2 newDir = -ball.getVelocity();
 		newDir.x += sony.getVelocity().x;
 		if(newDir.x <100){
@@ -218,6 +221,9 @@ void Spacewar::collisions()
 	if(ball.collidesWith(sony2, temp) && !sony2LastFrame && ball.getVelocity().x > 0)
 	{
 		sony2LastFrame = true;
+		sony2.setFrames(1,8);
+		sony2.setLoop(false);
+		sony2.setCurrentFrame(1);
 		D3DXVECTOR2 newDir = -ball.getVelocity();
 		newDir.x += sony2.getVelocity().x;
 		ball.setSpin(ball.getSpin() + sony2.getVelocity().y);
@@ -233,6 +239,8 @@ void Spacewar::collisions()
 	}else {
 		sony2LastFrame = false;
 	}
+	sony.update(frameTime);
+	sony2.update(frameTime);
 }
 
 //=============================================================================
