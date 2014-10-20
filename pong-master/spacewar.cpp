@@ -14,7 +14,7 @@ int score1=0,score2=0;
 Spacewar::Spacewar()
 {
 	
-}
+};
 
 //=============================================================================
 // Destructor
@@ -67,8 +67,8 @@ void Spacewar::initialize(HWND hwnd)
         throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing DirectX font"));
 
 	
-	sonyVel.xVel = 300;
-	sonyVel.yVel = 300;
+	sonyVel.xVel = 600;
+	sonyVel.yVel = 600;
 
 	sony2Vel.xVel = 0;
 	sony2Vel.yVel = 150;
@@ -123,12 +123,14 @@ void Spacewar::update()
 	float oldY2 = sony2.getY();
 
 	//player 1
-	sony.setY(input->getMouseY());
-	if(input->getMouseX()<GAME_WIDTH/4){
-		sony.setX(input->getMouseX());
-	}
+		// Instant jump
 	/*
-	// Position at cursor if close enough
+	sony.setY(input->getMouseY());
+	if(input->getMouseX()-64/2<GAME_WIDTH/2){
+		sony.setX(input->getMouseX()-64/2);
+	}*/
+	
+	// Gradual movement
 	if(sonyVel.xVel*frameTime > abs((input->getMouseX()-64/2)-sony.getX()) ) {
 		pos.x = input->getMouseX()-64/2;
 	} else {
@@ -142,9 +144,11 @@ void Spacewar::update()
 
 	sony.setX(pos.x);
 	sony.setY(pos.y);
-	if(sony.getX()>GAME_WIDTH/4) {
-		sony.setX(GAME_WIDTH/4);
-	}*/
+	if(sony.getX()>GAME_WIDTH/2-64) {
+		sony.setX(GAME_WIDTH/2-64);
+	}
+	
+
 	//player 2
 
 	if(ball.getY() > sony2.getY() +sony2.getHeight()){
